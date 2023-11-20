@@ -46,7 +46,7 @@ const Quiz: FC = () => {
     setScore((prevScore) => prevScore + result);
 
     if (currentIndex === questions.length - 1) {
-      fetchQuestions(2);
+      fetchQuestions(5);
       return;
     }
     setSelectedAnswer("");
@@ -71,7 +71,7 @@ const Quiz: FC = () => {
   }
 
   useEffect(() => {
-    fetchQuestions(1);
+    fetchQuestions(10);
   }, []);
 
   useEffect(() => {
