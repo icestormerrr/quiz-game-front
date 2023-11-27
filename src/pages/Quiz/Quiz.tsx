@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 import { QuizResult, TimeByMode } from "../../store/quiz/types";
 import { ApplicationState } from "../../store";
-import { addQuizResult, requestQuizQuestions } from "../../store/quiz/actions";
+import { addQuizResult, requestQuizQuestions, setQuizQuestions } from "../../store/quiz/actions";
 import { QUIZ_ADDITIONAL_TIME, QUIZ_QUESTIONS_NUMBER } from "../../config";
 import Button from "../../components/Button/Button";
 import useTimer from "../../hooks/useTimer";
@@ -18,20 +18,16 @@ const Quiz: FC = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 
-  const mode = useSelector((state: ApplicationState) => state.quiz.mode);
-  const questions = useSelector((state: ApplicationState) => state.quiz.questions);
+  const { questions, mode, loading, error } = useSelector((state: ApplicationState) => state.quiz);
 
   const { seconds, change: changeTimer } = useTimer(TimeByMode[mode], true);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
-
-  const [isLoading, setIsLoading] = useState(false);
   const [isAdditionalTimeUsed, setIsAdditionalTimeUsed] = useState(false);
 
-  const handleAnswerClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, variant: string) => {
-    event.preventDefault();
+  const handleAnswerClick = (variant: string) => {
     setSelectedAnswer(variant);
   };
 
@@ -40,9 +36,7 @@ const Quiz: FC = () => {
     setIsAdditionalTimeUsed(true);
   };
 
-  const handleCheckAnswer = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-
+  const handleCheckAnswer = () => {
     const result = selectedAnswer === questions[currentIndex]?.answer ? 1 : -1;
     setScore((prevScore) => prevScore + result);
 
@@ -57,33 +51,32 @@ const Quiz: FC = () => {
       date: Date.now(),
     };
     dispatch(addQuizResult(lastResult));
+    dispatch(setQuizQuestions([]));
     navigate("/");
   };
 
   useEffect(() => {
     async function fetchQuestions(number: number) {
-      setIsLoading(true);
-      const { errors } = await dispatch(requestQuizQuestions(number, mode));
-      if (errors) {
-        alert("Произошла ошибка сервера!");
-        navigate("/");
-      }
-      setIsLoading(false);
+      await dispatch(requestQuizQuestions(number, mode));
     }
     fetchQuestions(QUIZ_QUESTIONS_NUMBER);
   }, []);
 
   useEffect(() => {
     seconds <= 0 && handleSaveResult();
-  }, [seconds]);
+    currentIndex === questions.length && handleSaveResult();
+  }, [currentIndex, seconds]);
 
   useEffect(() => {
-    currentIndex === questions.length && handleSaveResult();
-  }, [currentIndex]);
+    if (error) {
+      alert("Произошла ошибка сервера!");
+      navigate("/");
+    }
+  }, [error]);
 
   return (
     <div className={classes.container}>
-      {isLoading && <Spinner />}
+      {loading && <Spinner />}
       <div className={classes.info}>
         <p>Время: {seconds}</p>
 
@@ -95,8 +88,9 @@ const Quiz: FC = () => {
         <div className={classes.input}>
           {questions[currentIndex]?.variants.map((variant) => (
             <button
-              className={clsx(classes.value, selectedAnswer === variant && classes.active)}
-              onClick={(event) => handleAnswerClick(event, variant)}
+              type="button"
+              className={clsx(classes.value, { [classes.active]: selectedAnswer === variant })}
+              onClick={() => handleAnswerClick(variant)}
               key={variant}
             >
               {variant}
@@ -107,6 +101,7 @@ const Quiz: FC = () => {
 
       <div className={classes.buttonGroup}>
         <Button
+          type="button"
           disabled={!selectedAnswer}
           className={classes.confirmAnswerButton}
           title={"Подтвердить"}
@@ -122,3 +117,9 @@ const Quiz: FC = () => {
 };
 
 export default Quiz;
+
+/*
+
+ *
+ *
+ * */

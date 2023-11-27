@@ -1,5 +1,5 @@
 import moment from "moment/moment";
 
-export default function parseDate(date: number): string {
+export default function formatDate(date: Date | number): string {
   return moment(date).format("HH:mm DD.MM");
 }

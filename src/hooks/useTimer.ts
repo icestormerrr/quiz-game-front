@@ -9,29 +9,26 @@ interface TimerHook {
 }
 
 export default function useTimer(initialTime: number, autostart: boolean = false): TimerHook {
-  const [ticking, setTicking] = useState<boolean>(autostart);
-  const [seconds, setSeconds] = useState<number>(initialTime);
+  const [ticking, setTicking] = useState(autostart);
+  const [seconds, setSeconds] = useState(initialTime);
 
-  const start = useCallback(() => setTicking(true), [setTicking]);
+  const start = useCallback(() => setTicking(true), []);
 
-  const stop = useCallback(() => setTicking(false), [setTicking]);
+  const stop = useCallback(() => setTicking(false), []);
 
   const reset = useCallback(() => {
     setTicking(false);
     setSeconds(initialTime);
-  }, [initialTime, setTicking, setSeconds]);
+  }, [initialTime]);
 
-  const change = useCallback(
-    (seconds: number) => {
-      if (seconds > 0) {
-        setSeconds(seconds);
-      }
-    },
-    [setSeconds],
-  );
+  const change = useCallback((seconds: number) => {
+    if (seconds > 0) {
+      setSeconds(seconds);
+    }
+  }, []);
 
   useEffect(() => {
-    let timerId: NodeJS.Timer;
+    let timerId: ReturnType<typeof setInterval>;
 
     if (ticking) {
       timerId = setInterval(() => {

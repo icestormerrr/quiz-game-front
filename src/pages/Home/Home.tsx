@@ -11,7 +11,7 @@ import Select, { Option } from "../../components/Select/Select";
 
 import classes from "./Home.module.scss";
 
-const ModeOptions = [
+const ModeOptions: Option<QuizMode>[] = [
   { label: "Лёгкий", value: QuizMode.Easy },
   { label: "Средний", value: QuizMode.Medium },
   { label: "Сложный", value: QuizMode.Hard },
@@ -25,9 +25,10 @@ const Home: FC = () => {
 
   const mode = useSelector((state: ApplicationState) => state.quiz.mode);
 
-  const modeOption: Option = useMemo(() => {
-    return ModeOptions.find((opt) => opt.value === mode) || ({} as Option);
-  }, [mode]);
+  const modeOption = useMemo<Option<QuizMode>>(
+    () => ModeOptions.find((opt) => opt.value === mode) || ({} as Option),
+    [mode],
+  );
 
   const handleModeChange = (newOption: Option) => {
     dispatch(setQuizMode(newOption.value));
