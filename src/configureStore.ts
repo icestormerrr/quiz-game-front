@@ -2,12 +2,13 @@ import { createStore, applyMiddleware, Store } from "redux";
 import { persistStore, persistReducer, Persistor } from "redux-persist";
 import thunk from "redux-thunk";
 import storage from "redux-persist/lib/storage";
-
-import { ApplicationState, rootReducer } from "./store";
 import { PersistPartial } from "redux-persist/lib/persistReducer";
 
+import { ApplicationState, rootReducer } from "./store";
+import { PERSIST_STORE_KEY } from "./config";
+
 const persistConfig = {
-  key: "root",
+  key: PERSIST_STORE_KEY,
   storage,
 };
 
@@ -17,7 +18,7 @@ export default function configureStore(initialState: (ApplicationState & Persist
 } {
   const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-  const store = createStore(persistedReducer, applyMiddleware(thunk));
+  const store = createStore(persistedReducer, initialState, applyMiddleware(thunk));
 
   const persistor = persistStore(store);
 

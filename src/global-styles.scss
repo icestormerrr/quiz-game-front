@@ -23,10 +23,8 @@ code {
   justify-content: center;
   min-height: 100vh;
   color: white;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(9px + 2vmin);
   gap: 40px;
-}
-
-.App-link {
-  color: #61dafb;
+  padding: 20px;
+  box-sizing: border-box;
 }

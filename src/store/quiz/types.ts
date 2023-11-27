@@ -10,11 +10,6 @@ export const TimeByMode: Record<QuizMode, number> = {
   [QuizMode.Hard]: 12,
 };
 
-export interface Quiz {
-  questions: Question[];
-  mode: QuizMode;
-}
-
 export interface Question {
   id: string;
   mode: QuizMode;
@@ -24,13 +19,13 @@ export interface Question {
 }
 
 export interface QuizResult {
-  date: string;
+  date: number;
   result: number;
   time: number;
 }
 
 export interface QuizState {
-  quiz: Quiz;
-  quizResults: QuizResult[];
-  quizLastResult: QuizResult;
+  questions: Question[];
+  mode: QuizMode;
+  results: QuizResult[];
 }

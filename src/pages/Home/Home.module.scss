@@ -1,0 +1,13 @@
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.startQuizButton {
+  width: 400px;
+}
+
+.clearResultsButton {
+  width: 20px;
+}

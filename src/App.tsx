@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import Quiz from "./pages/Quiz/Quiz";
 
 import "./global-styles.scss";

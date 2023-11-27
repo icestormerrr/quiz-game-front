@@ -1,18 +1,13 @@
-import axios from "axios";
 import { API_ENDPOINT } from "../../config";
-import { Question, Quiz, QuizMode, QuizResult } from "./types";
+import { Question, QuizMode, QuizResult } from "./types";
 
 export enum QuizActionTypes {
   SET_QUIZ_QUESTIONS = "SET_QUIZ_QUESTIONS",
   SET_QUIZ_MODE = "SET_QUIZ_MODE",
   SET_QUIZ_RESULTS = "SET_QUIZ_RESULTS",
   ADD_QUIZ_RESULT = "ADD_QUIZ_RESULT",
-  SET_QUIZ_LAST_RESULT = "SET_QUIZ_LAST_RESULT",
 }
 
-/**
- *
- */
 export const requestQuizQuestions = (number: number, mode: QuizMode) => async (dispatch: any) => {
   try {
     const response = await fetch(`${API_ENDPOINT}/questions?number=${number}&mode=${mode}`, {
@@ -47,10 +42,5 @@ export const setQuizResults = (results: QuizResult[]) => ({
 
 export const addQuizResult = (result: QuizResult) => ({
   type: QuizActionTypes.ADD_QUIZ_RESULT,
-  result: result,
-});
-
-export const setQuizLastResult = (result: QuizResult) => ({
-  type: QuizActionTypes.SET_QUIZ_LAST_RESULT,
   result: result,
 });
