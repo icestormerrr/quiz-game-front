@@ -57,7 +57,9 @@ const Quiz: FC = () => {
   };
 
   useEffect(() => {
-    dispatch(requestQuizQuestions({ number: QUIZ_QUESTIONS_NUMBER, mode })).then(startTimer);
+    dispatch(requestQuizQuestions({ number: QUIZ_QUESTIONS_NUMBER, mode }))
+      .unwrap()
+      .then(startTimer);
   }, []);
 
   useEffect(() => {

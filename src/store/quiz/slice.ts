@@ -16,22 +16,22 @@ const quizSlice = createSlice({
   name: "quiz",
   initialState,
   reducers: {
-    setQuizMode: (state: QuizState, action: PayloadAction<QuizMode>) => {
+    setQuizMode: (state, action: PayloadAction<QuizMode>) => {
       state.mode = action.payload;
     },
-    setQuizLoading: (state: QuizState, action: PayloadAction<boolean>) => {
+    setQuizLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setQuizError: (state: QuizState, action: PayloadAction<Error | null>) => {
+    setQuizError: (state, action: PayloadAction<Error | null>) => {
       state.error = action.payload;
     },
-    setQuizResults: (state: QuizState, action: PayloadAction<QuizResult[]>) => {
+    setQuizResults: (state, action: PayloadAction<QuizResult[]>) => {
       state.results = action.payload;
     },
-    setQuizQuestions: (state: QuizState, action: PayloadAction<Question[]>) => {
+    setQuizQuestions: (state, action: PayloadAction<Question[]>) => {
       state.questions = action.payload;
     },
-    addQuizResult: (state: QuizState, action: PayloadAction<QuizResult>) => {
+    addQuizResult: (state, action: PayloadAction<QuizResult>) => {
       state.results.push(action.payload);
       state.results = state.results
         .sort((resultA, resultB) => resultB.result - resultA.result)
