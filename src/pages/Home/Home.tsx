@@ -34,7 +34,7 @@ const Home: FC = () => {
   };
 
   const handleStartQuiz = () => {
-    dispatch(setQuizError(null));
+    dispatch(setQuizError(false));
     dispatch(setQuizQuestions([]));
     navigate("/quiz");
   };

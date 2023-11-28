@@ -56,10 +56,13 @@ const Quiz: FC = () => {
     navigate("/");
   };
 
+  const handleRequestError = () => {
+    alert("Произошла ошибка сервера!");
+    navigate("/");
+  };
+
   useEffect(() => {
-    dispatch(requestQuizQuestions({ number: QUIZ_QUESTIONS_NUMBER, mode }))
-      .unwrap()
-      .then(startTimer);
+    dispatch(requestQuizQuestions({ number: QUIZ_QUESTIONS_NUMBER, mode }));
   }, []);
 
   useEffect(() => {
@@ -69,10 +72,13 @@ const Quiz: FC = () => {
 
   useEffect(() => {
     if (error) {
-      alert("Произошла ошибка сервера!");
-      navigate("/");
+      handleRequestError();
     }
   }, [error]);
+
+  useEffect(() => {
+    if (questions.length > 0 && !loading) startTimer();
+  }, [loading, questions.length, startTimer]);
 
   return (
     <div className={classes.container}>

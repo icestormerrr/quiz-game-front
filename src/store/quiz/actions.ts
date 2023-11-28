@@ -1,8 +1,8 @@
 import { API_ENDPOINT } from "../../config";
-import { QuizMode, QuizResult } from "./types";
+import { Question, QuizMode } from "./types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const requestQuizQuestions = createAsyncThunk<QuizResult[], { number: number; mode: QuizMode }>(
+export const requestQuizQuestions = createAsyncThunk<Question[], { number: number; mode: QuizMode }>(
   "quiz/requestQuestions",
   async (params, thunkAPI) => {
     const { number, mode } = params;

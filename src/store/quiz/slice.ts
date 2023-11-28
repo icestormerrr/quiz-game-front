@@ -6,7 +6,7 @@ import { requestQuizQuestions } from "./actions";
 
 const initialState: QuizState = {
   loading: false,
-  error: null,
+  error: false,
   questions: [],
   mode: QuizMode.Easy,
   results: [],
@@ -22,14 +22,14 @@ const quizSlice = createSlice({
     setQuizLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setQuizError: (state, action: PayloadAction<Error | null>) => {
+    setQuizError: (state, action: PayloadAction<boolean>) => {
       state.error = action.payload;
-    },
-    setQuizResults: (state, action: PayloadAction<QuizResult[]>) => {
-      state.results = action.payload;
     },
     setQuizQuestions: (state, action: PayloadAction<Question[]>) => {
       state.questions = action.payload;
+    },
+    setQuizResults: (state, action: PayloadAction<QuizResult[]>) => {
+      state.results = action.payload;
     },
     addQuizResult: (state, action: PayloadAction<QuizResult>) => {
       state.results.push(action.payload);
@@ -38,19 +38,22 @@ const quizSlice = createSlice({
         .slice(0, MAX_RESULTS_COUNT);
     },
   },
-  extraReducers: {
-    [requestQuizQuestions.fulfilled.type]: (state, action: PayloadAction<Question[]>) => {
-      state.loading = false;
-      state.error = null;
-      state.questions = action.payload;
-    },
-    [requestQuizQuestions.pending.type]: (state) => {
-      state.loading = true;
-    },
-    [requestQuizQuestions.rejected.type]: (state, action: PayloadAction<Error | null>) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(requestQuizQuestions.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+        state.questions = [];
+      })
+      .addCase(requestQuizQuestions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.questions = action.payload;
+      })
+      .addCase(requestQuizQuestions.rejected, (state) => {
+        state.loading = false;
+        state.error = true;
+      });
   },
 });
 
