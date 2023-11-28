@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
 import { QuizMode } from "../../store/quiz/types";
-import { ApplicationState } from "../../store";
-import { setQuizError, setQuizMode, setQuizQuestions, setQuizResults } from "../../store/quiz/actions";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import quizSlice from "../../store/quiz/slice";
 import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
 import Button from "../../components/Button/Button";
 import Select, { Option } from "../../components/Select/Select";
@@ -19,11 +19,10 @@ const ModeOptions: Option<QuizMode>[] = [
 
 const Home: FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const quizResults = useSelector((state: ApplicationState) => state.quiz.results);
-
-  const mode = useSelector((state: ApplicationState) => state.quiz.mode);
+  const { mode, results } = useAppSelector((state) => state.quiz);
+  const { setQuizError, setQuizResults, setQuizMode, setQuizQuestions } = quizSlice.actions;
 
   const modeOption = useMemo<Option<QuizMode>>(
     () => ModeOptions.find((opt) => opt.value === mode) || ({} as Option),
@@ -48,7 +47,7 @@ const Home: FC = () => {
     <>
       <Select value={modeOption} onChange={handleModeChange} options={ModeOptions} />
 
-      <ScoreBoard results={quizResults} />
+      <ScoreBoard results={results} />
 
       <div className={classes.buttonGroup}>
         <Button title={"Перейти к викторине"} onClick={handleStartQuiz} className={classes.startQuizButton} />
