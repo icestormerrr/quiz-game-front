@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { QuizMode } from "../../store/quiz/types";
 import { ApplicationState } from "../../store";
-import { setQuizMode, setQuizResults } from "../../store/quiz/actions";
+import { setQuizError, setQuizMode, setQuizQuestions, setQuizResults } from "../../store/quiz/actions";
 import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
 import Button from "../../components/Button/Button";
 import Select, { Option } from "../../components/Select/Select";
@@ -35,6 +35,8 @@ const Home: FC = () => {
   };
 
   const handleStartQuiz = () => {
+    dispatch(setQuizError(null));
+    dispatch(setQuizQuestions([]));
     navigate("/quiz");
   };
 

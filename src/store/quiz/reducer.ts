@@ -7,7 +7,6 @@ import { MAX_RESULTS_COUNT } from "../../config";
 
 const initialState: QuizState = {
   loading: false,
-  additionalTimeUsed: false,
   error: null,
   questions: [],
   mode: QuizMode.Easy,
@@ -27,10 +26,6 @@ const reducer: Reducer<QuizState> = (state: QuizState = initialState, action: An
 
       case QuizActionTypes.SET_QUIZ_LOADING:
         draft.loading = action.loading;
-        break;
-
-      case QuizActionTypes.SET_ADDITIONAL_TIME_USED:
-        draft.additionalTimeUsed = action.additionalTimeUsed;
         break;
 
       case QuizActionTypes.SET_QUIZ_ERROR:

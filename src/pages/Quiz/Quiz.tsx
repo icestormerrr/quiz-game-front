@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 import { QuizResult, TimeByMode } from "../../store/quiz/types";
 import { ApplicationState } from "../../store";
-import { addQuizResult, requestQuizQuestions, setQuizQuestions } from "../../store/quiz/actions";
+import { addQuizResult, requestQuizQuestions } from "../../store/quiz/actions";
 import { QUIZ_ADDITIONAL_TIME, QUIZ_QUESTIONS_NUMBER } from "../../config";
 import Button from "../../components/Button/Button";
 import useTimer from "../../hooks/useTimer";
@@ -20,7 +20,7 @@ const Quiz: FC = () => {
 
   const { questions, mode, loading, error } = useSelector((state: ApplicationState) => state.quiz);
 
-  const { seconds, change: changeTimer } = useTimer(TimeByMode[mode], true);
+  const { seconds, change: changeTimer, start: startTimer } = useTimer(TimeByMode[mode]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
@@ -51,7 +51,6 @@ const Quiz: FC = () => {
       date: Date.now(),
     };
     dispatch(addQuizResult(lastResult));
-    dispatch(setQuizQuestions([]));
     navigate("/");
   };
 
@@ -59,12 +58,12 @@ const Quiz: FC = () => {
     async function fetchQuestions(number: number) {
       await dispatch(requestQuizQuestions(number, mode));
     }
-    fetchQuestions(QUIZ_QUESTIONS_NUMBER);
+    fetchQuestions(QUIZ_QUESTIONS_NUMBER).then(startTimer);
   }, []);
 
   useEffect(() => {
     seconds <= 0 && handleSaveResult();
-    currentIndex === questions.length && handleSaveResult();
+    questions.length > 0 && currentIndex === questions.length && handleSaveResult();
   }, [currentIndex, seconds]);
 
   useEffect(() => {
