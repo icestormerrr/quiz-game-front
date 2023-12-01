@@ -1,13 +1,15 @@
 import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { persistReducer, persistStore } from "redux-persist";
+import { PERSIST, persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import quizSlice from "./quiz/slice";
+import { quizSlice } from "./quiz/slice";
 import { PERSIST_STORE_KEY } from "../config";
+import { quizAPI } from "./quiz/api";
 
 export const rootReducer = combineReducers({
-  quiz: quizSlice.reducer,
+  [quizSlice.name]: quizSlice.reducer,
+  [quizAPI.reducerPath]: quizAPI.reducer,
 });
 
 const persistConfig = {
@@ -19,6 +21,12 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [PERSIST],
+      },
+    }).concat(quizAPI.middleware),
 });
 
 export const persistor = persistStore(store);

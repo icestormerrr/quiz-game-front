@@ -25,10 +25,6 @@ export interface QuizResult {
 }
 
 export interface QuizState {
-  loading: boolean;
-  error: boolean;
-
-  questions: Question[];
   mode: QuizMode;
   results: QuizResult[];
 }

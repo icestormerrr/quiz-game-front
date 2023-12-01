@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 
 import { QuizResult, TimeByMode } from "../../store/quiz/types";
-import { requestQuizQuestions } from "../../store/quiz/actions";
+import { useGetQuestionsQuery } from "../../store/quiz/api";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import quizSlice from "../../store/quiz/slice";
+import { addQuizResult } from "../../store/quiz/slice";
 import { QUIZ_ADDITIONAL_TIME, QUIZ_QUESTIONS_NUMBER } from "../../config";
 import Button from "../../components/Button/Button";
 import useTimer from "../../hooks/useTimer";
@@ -19,8 +19,12 @@ const Quiz: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { questions, mode, loading, error } = useAppSelector((state) => state.quiz);
-  const { addQuizResult } = quizSlice.actions;
+  const mode = useAppSelector((state) => state.quiz.mode);
+  const {
+    data: questions = [],
+    isError,
+    isFetching,
+  } = useGetQuestionsQuery({ number: QUIZ_QUESTIONS_NUMBER, mode: mode }, { refetchOnMountOrArgChange: true });
 
   const { seconds, change: changeTimer, start: startTimer } = useTimer(TimeByMode[mode]);
 
@@ -62,27 +66,21 @@ const Quiz: FC = () => {
   };
 
   useEffect(() => {
-    dispatch(requestQuizQuestions({ number: QUIZ_QUESTIONS_NUMBER, mode }));
-  }, []);
-
-  useEffect(() => {
     seconds <= 0 && handleSaveResult();
     questions.length > 0 && currentIndex === questions.length && handleSaveResult();
   }, [currentIndex, seconds]);
 
   useEffect(() => {
-    if (error) {
-      handleRequestError();
-    }
-  }, [error]);
+    isError && handleRequestError();
+  }, [isError]);
 
   useEffect(() => {
-    if (questions.length > 0 && !loading) startTimer();
-  }, [loading, questions.length, startTimer]);
+    if (questions.length > 0 && !isFetching) startTimer();
+  }, [isFetching, questions.length, startTimer]);
 
   return (
     <div className={classes.container}>
-      {loading && <Spinner />}
+      {isFetching && <Spinner />}
       <div className={classes.info}>
         <p>Время: {seconds}</p>
 

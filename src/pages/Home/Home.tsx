@@ -4,11 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { QuizMode } from "../../store/quiz/types";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import quizSlice from "../../store/quiz/slice";
+import { setQuizMode, setQuizResults } from "../../store/quiz/slice";
 import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
 import Button from "../../components/Button/Button";
 import Select, { Option } from "../../components/Select/Select";
-
 import classes from "./Home.module.scss";
 
 const ModeOptions: Option<QuizMode>[] = [
@@ -22,7 +21,6 @@ const Home: FC = () => {
   const dispatch = useAppDispatch();
 
   const { mode, results } = useAppSelector((state) => state.quiz);
-  const { setQuizError, setQuizResults, setQuizMode, setQuizQuestions } = quizSlice.actions;
 
   const modeOption = useMemo<Option<QuizMode>>(
     () => ModeOptions.find((opt) => opt.value === mode) || ({} as Option),
@@ -34,8 +32,6 @@ const Home: FC = () => {
   };
 
   const handleStartQuiz = () => {
-    dispatch(setQuizError(false));
-    dispatch(setQuizQuestions([]));
     navigate("/quiz");
   };
 
