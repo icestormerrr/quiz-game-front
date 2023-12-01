@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { QuizMode } from "../../store/quiz/types";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { setQuizMode, setQuizResults } from "../../store/quiz/slice";
+import { setQuizMode } from "../../store/quiz/slice";
+import { useDeleteResultMutation, useGetResultsQuery } from "../../store/results/api";
 import ScoreBoard from "../../components/ScoreBoard/ScoreBoard";
 import Button from "../../components/Button/Button";
 import Select, { Option } from "../../components/Select/Select";
@@ -20,8 +21,10 @@ const Home: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { mode, results } = useAppSelector((state) => state.quiz);
+  const { data: results = [], isFetching: isResultsFetching } = useGetResultsQuery();
+  const [deleteResult, { isLoading: isResultDeleting }] = useDeleteResultMutation();
 
+  const mode = useAppSelector((state) => state.quiz.mode);
   const modeOption = useMemo<Option<QuizMode>>(
     () => ModeOptions.find((opt) => opt.value === mode) || ({} as Option),
     [mode],
@@ -36,14 +39,16 @@ const Home: FC = () => {
   };
 
   const handleClearResults = () => {
-    dispatch(setQuizResults([]));
+    results.forEach((res) => {
+      deleteResult(res.date);
+    });
   };
 
   return (
     <>
       <Select value={modeOption} onChange={handleModeChange} options={ModeOptions} />
 
-      <ScoreBoard results={results} />
+      <ScoreBoard results={results} isLoading={isResultsFetching || isResultDeleting} />
 
       <div className={classes.buttonGroup}>
         <Button title={"Перейти к викторине"} onClick={handleStartQuiz} className={classes.startQuizButton} />

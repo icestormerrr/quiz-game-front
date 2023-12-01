@@ -5,26 +5,24 @@ import clsx from "clsx";
 
 import { QuizResult, TimeByMode } from "../../store/quiz/types";
 import { useGetQuestionsQuery } from "../../store/quiz/api";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import { addQuizResult } from "../../store/quiz/slice";
 import { QUIZ_ADDITIONAL_TIME, QUIZ_QUESTIONS_NUMBER } from "../../config";
 import Button from "../../components/Button/Button";
 import useTimer from "../../hooks/useTimer";
 import Spinner from "../../components/Spinner/Spinner";
 
 import classes from "./Quiz.module.scss";
+import { useAddResultMutation } from "../../store/results/api";
 
 const Quiz: FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const mode = useAppSelector((state) => state.quiz.mode);
-  const {
-    data: questions = [],
-    isError,
-    isFetching,
-  } = useGetQuestionsQuery({ number: QUIZ_QUESTIONS_NUMBER, mode: mode }, { refetchOnMountOrArgChange: true });
+  const { data: questions = [], isFetching } = useGetQuestionsQuery(
+    { number: QUIZ_QUESTIONS_NUMBER, mode: mode },
+    { refetchOnMountOrArgChange: true },
+  );
+  const [addResult, {}] = useAddResultMutation();
 
   const { seconds, change: changeTimer, start: startTimer } = useTimer(TimeByMode[mode]);
 
@@ -56,12 +54,7 @@ const Quiz: FC = () => {
       result: score,
       date: Date.now(),
     };
-    dispatch(addQuizResult(lastResult));
-    navigate("/");
-  };
-
-  const handleRequestError = () => {
-    alert("Произошла ошибка сервера!");
+    addResult(lastResult);
     navigate("/");
   };
 
@@ -69,10 +62,6 @@ const Quiz: FC = () => {
     seconds <= 0 && handleSaveResult();
     questions.length > 0 && currentIndex === questions.length && handleSaveResult();
   }, [currentIndex, seconds]);
-
-  useEffect(() => {
-    isError && handleRequestError();
-  }, [isError]);
 
   useEffect(() => {
     if (questions.length > 0 && !isFetching) startTimer();

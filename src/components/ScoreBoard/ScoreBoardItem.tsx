@@ -4,7 +4,7 @@ import { QuizResult } from "../../store/quiz/types";
 import formatDate from "../../utils/formatDate";
 import classes from "./ScoreBoard.module.scss";
 
-interface ScoreBoardItemProps extends QuizResult {}
+interface ScoreBoardItemProps extends Omit<QuizResult, "_id"> {}
 
 const ScoreBoardItem: FC<ScoreBoardItemProps> = memo(({ time, result, date }) => {
   return (
