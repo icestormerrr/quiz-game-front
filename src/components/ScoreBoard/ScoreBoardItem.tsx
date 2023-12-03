@@ -1,6 +1,6 @@
 import React, { FC, memo } from "react";
 
-import { QuizResult } from "../../store/quiz/types";
+import { QuizResult } from "../../store/results/types";
 import formatDate from "../../utils/formatDate";
 import classes from "./ScoreBoard.module.scss";
 

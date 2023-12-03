@@ -1,3 +1,5 @@
+import { QuizResult } from "../results/types";
+
 export enum QuizMode {
   Easy = "easy",
   Medium = "medium",
@@ -16,13 +18,6 @@ export interface Question {
   question: string;
   variants: string[];
   answer: string;
-}
-
-export interface QuizResult {
-  _id?: string;
-  date: number;
-  result: number;
-  time: number;
 }
 
 export interface QuizState {

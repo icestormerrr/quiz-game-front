@@ -26,9 +26,13 @@
     z-index: -1;
   }
 }
-
+@media (max-width: 1540px) {
+  .radioInputs {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
 .radio {
-  //width: 70px;
   text-align: center;
 }
 

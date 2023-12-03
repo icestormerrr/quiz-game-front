@@ -29,6 +29,12 @@ code {
   box-sizing: border-box;
 }
 
+@media (max-width: 1540px) {
+  .app {
+    gap: 30px;
+  }
+}
+
 .homeButton {
   cursor: pointer;
 }

@@ -40,7 +40,7 @@ const Home: FC = () => {
 
   const handleClearResults = () => {
     results.forEach((res) => {
-      deleteResult(res.date);
+      deleteResult(res._id);
     });
   };
 

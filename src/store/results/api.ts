@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { API_ENDPOINT } from "../../config";
-import { QuizResult } from "../quiz/types";
+import { QuizResult } from "./types";
 
 export const resultsAPI = createApi({
   reducerPath: "resultsAPI",
@@ -13,7 +13,7 @@ export const resultsAPI = createApi({
       }),
       providesTags: ["Results"],
     }),
-    addResult: build.mutation<QuizResult[], QuizResult>({
+    addResult: build.mutation<QuizResult, QuizResult>({
       query: (result) => ({
         url: `/results`,
         method: "POST",
@@ -21,7 +21,7 @@ export const resultsAPI = createApi({
       }),
       invalidatesTags: ["Results"],
     }),
-    deleteResult: build.mutation<QuizResult[], number>({
+    deleteResult: build.mutation<{ message: string }, string>({
       query: (resultId) => ({
         url: `/results/${resultId}`,
         method: "DELETE",

@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 500px;
+  max-width: 450px;
   min-width: 250px;
   width: 100%;
   gap: 40px;
@@ -13,6 +13,13 @@
   overflow: hidden;
   border: 1px solid rgba(43, 43, 43, 0.568);
 }
+
+@media (max-width: 1540px) {
+  .container {
+    gap: 20px;
+  }
+}
+
 .container:before {
   position: absolute;
   content: '';

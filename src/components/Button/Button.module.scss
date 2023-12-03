@@ -18,3 +18,10 @@
     transition: all .3s;
   }
 }
+
+@media (max-width: 1540px) {
+  .button {
+    font-size: 15px;
+    height: 50px;
+  }
+}

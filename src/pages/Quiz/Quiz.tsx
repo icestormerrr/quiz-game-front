@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import clsx from "clsx";
 
-import { QuizResult, TimeByMode } from "../../store/quiz/types";
+import { TimeByMode } from "../../store/quiz/types";
+import { QuizResult } from "../../store/results/types";
 import { useGetQuestionsQuery } from "../../store/quiz/api";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { QUIZ_ADDITIONAL_TIME, QUIZ_QUESTIONS_NUMBER } from "../../config";
@@ -22,7 +23,7 @@ const Quiz: FC = () => {
     { number: QUIZ_QUESTIONS_NUMBER, mode: mode },
     { refetchOnMountOrArgChange: true },
   );
-  const [addResult, {}] = useAddResultMutation();
+  const [addResult] = useAddResultMutation();
 
   const { seconds, change: changeTimer, start: startTimer } = useTimer(TimeByMode[mode]);
 
@@ -50,6 +51,7 @@ const Quiz: FC = () => {
 
   const handleSaveResult = () => {
     const lastResult: QuizResult = {
+      _id: "",
       time: TimeByMode[mode] - seconds + (isAdditionalTimeUsed ? QUIZ_ADDITIONAL_TIME : 0),
       result: score,
       date: Date.now(),
