@@ -1,12 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
 import clsx from "clsx";
 
 import { QuizResult, TimeByMode } from "../../store/quiz/types";
-import { ApplicationState } from "../../store";
-import { addQuizResult, requestQuizQuestions } from "../../store/quiz/actions";
+import { requestQuizQuestions } from "../../store/quiz/actions";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import quizSlice from "../../store/quiz/slice";
 import { QUIZ_ADDITIONAL_TIME, QUIZ_QUESTIONS_NUMBER } from "../../config";
 import Button from "../../components/Button/Button";
 import useTimer from "../../hooks/useTimer";
@@ -15,10 +16,11 @@ import Spinner from "../../components/Spinner/Spinner";
 import classes from "./Quiz.module.scss";
 
 const Quiz: FC = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { questions, mode, loading, error } = useSelector((state: ApplicationState) => state.quiz);
+  const { questions, mode, loading, error } = useAppSelector((state) => state.quiz);
+  const { addQuizResult } = quizSlice.actions;
 
   const { seconds, change: changeTimer, start: startTimer } = useTimer(TimeByMode[mode]);
 
@@ -54,11 +56,13 @@ const Quiz: FC = () => {
     navigate("/");
   };
 
+  const handleRequestError = () => {
+    alert("Произошла ошибка сервера!");
+    navigate("/");
+  };
+
   useEffect(() => {
-    async function fetchQuestions(number: number) {
-      await dispatch(requestQuizQuestions(number, mode));
-    }
-    fetchQuestions(QUIZ_QUESTIONS_NUMBER).then(startTimer);
+    dispatch(requestQuizQuestions({ number: QUIZ_QUESTIONS_NUMBER, mode }));
   }, []);
 
   useEffect(() => {
@@ -68,10 +72,13 @@ const Quiz: FC = () => {
 
   useEffect(() => {
     if (error) {
-      alert("Произошла ошибка сервера!");
-      navigate("/");
+      handleRequestError();
     }
   }, [error]);
+
+  useEffect(() => {
+    if (questions.length > 0 && !loading) startTimer();
+  }, [loading, questions.length, startTimer]);
 
   return (
     <div className={classes.container}>
@@ -116,9 +123,3 @@ const Quiz: FC = () => {
 };
 
 export default Quiz;
-
-/*
-
- *
- *
- * */
